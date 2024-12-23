@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 105vh;
+            position: relative;
+            background: linear-gradient(180.87deg, #5b0085 2.43%, #c200b8 99.31%);
+        }
+
+        header input {
+            color: white;
+            padding: 7px 5px;
+            border: none;
+            border-radius: 15px;
+            background: #777777;
+            margin-right: 10px;
+            width: 300px;
+            border: 2px white solid;
+            outline: white;
+        }
+
+        input::placeholder {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 600;
+            color: white;
+            font-size: 16px;
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            padding: 10px;
+        }
+
+        .img img {
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img {
+            width: 300px;
+            position: absolute;
+            top: 50px;
+        }
+
+        .img h1 {
+            text-align: center;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 55px;
+        }
+
+        .img h2 span {
+            font-weight: 700;
+            display: block;
+        }
+
+        .img h2,
+        .img h3 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            color: white;
+            font-weight: normal;
+        }
+
+        .btn button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: orange;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            cursor: pointer;
+            width: 300px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: normal;
+            font-size: 23px;
+        }
+
+        .btn {
+            padding-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <input type="text" placeholder="Search city">
+    </header>
+    <div class="img">
+        <img src="Weather 10 18.png">
+        <h1 class="temp">--°</h1>
+        <h2><span class="city">City</span><br>
+            <h3 class="temp-max">Max: --°</h3>
+            <h3 class="temp-min">Min: --°</h3>
+        </h2>
+        <div class="btn">
+            <button id="search-btn">Search</button>
+        </div>
+    </div>
+    <script>
+        let search_btn = document.getElementById("search-btn");
+        let input = document.querySelector("input");
+        let city = document.querySelector(".city");
+        let temp = document.querySelector(".temp");
+        let temp_max = document.querySelector(".temp-max");
+        let temp_min = document.querySelector(".temp-min");
+        let weather_img = document.querySelector(".img img");
+
+        search_btn.addEventListener("click", () => {
+            if (input.value.trim() == "") {
+                alert("Please enter a city name");
+            } else {
+                fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${input.value}&appid=eaa5545307881ec088c9e8f0a377b6f5&units=metric`
+                )
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (data.cod === 200) {
+                            city.textContent = data.name;
+                            temp.textContent = `${Math.round(data.main.temp)}°`;
+                            temp_max.textContent = `Max: ${Math.round(data.main.temp_max)}°`;
+                            temp_min.textContent = `Min: ${Math.round(data.main.temp_min)}°`;
+
+                            let icon = data.weather[0].icon;
+                            weather_img.src = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+                        } else {
+                            alert("City not found!");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        alert("An error occurred. Please try again.");
+                    });
+            }
+        });
+    </script>
+</body>
+
+</html>
